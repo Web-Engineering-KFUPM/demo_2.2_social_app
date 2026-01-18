@@ -1,4 +1,3 @@
-Demo #4
 # Simple Social Media Page (HTML Only)
 
 ## Overview
@@ -23,6 +22,11 @@ A single-page, HTML-only mini app featuring:
 - `styles.css`: Optional stylesheet for nicer visuals
 
 ## Instructions
+
+> **Note:**  
+> Please follow the steps strictly to gain good marks in the assignment.  
+>  
+> **Due Date:** 19 Jan, 2026, **11:59 PM**
 
 ### Step 1: Start from the Starter File
 1. Open `index.html` in your editor.
