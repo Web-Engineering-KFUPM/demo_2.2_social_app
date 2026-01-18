@@ -359,7 +359,7 @@ const submissionLine = `- **Deadline (Riyadh / UTC+03:00):** ${DEADLINE_RIYADH_I
 - **Submission marks:** **${submissionScore}/${SUBMISSION_MAX}** ${isLate ? "(Late submission)" : "(On time)"}
 `;
 
-let summary = `# Lab 1 – Autograding Summary
+let summary = `# demo_2.2_social_app – Autograding Summary
 
 ## Submission
 
