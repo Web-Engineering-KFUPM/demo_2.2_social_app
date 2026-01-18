@@ -7,7 +7,8 @@
  *   - On/before deadline => 20/20
  *   - After deadline     => 10/20
  *
- * IGNORE optional TODOs (e.g., footer container, CSS link).
+ * IMPORTANT: Ignore HTML comments. (So examples in comments do NOT count.)
+ * IGNORE optional TODOs.
  * Do NOT check classes, ids, or inner text.
  *
  * Outputs:
@@ -88,6 +89,12 @@ function findHtmlFile() {
     }
   }
   return null;
+}
+
+// ✅ Critical fix: remove HTML comments so tags inside comments don't count
+function stripHtmlComments(html) {
+  // Removes <!-- ... --> including multiline comments
+  return html.replace(/<!--[\s\S]*?-->/g, "");
 }
 
 function hasTag(html, tagName) {
@@ -194,7 +201,10 @@ const submissionScore = isLate ? SUBMISSION_LATE : SUBMISSION_MAX;
    Load student HTML
 -------------------------------- */
 const htmlFile = findHtmlFile();
-const html = htmlFile ? safeRead(htmlFile) : null;
+const htmlRaw = htmlFile ? safeRead(htmlFile) : null;
+
+// ✅ Use cleaned HTML for all checks
+const html = htmlRaw ? stripHtmlComments(htmlRaw) : null;
 
 const results = []; // { id, name, max, score, checklist[], deductions[] }
 
@@ -218,13 +228,9 @@ if (!html) {
       : "No .html file found (expected index.html or any .html file)."
   );
 } else {
-  /* -----------------------------
-     Step 2: Main Page Container (15)
-     Very easy check: at least one <div>
-  -------------------------------- */
+  /* Step 2 */
   {
     const required = [{ label: "At least one <div> (main container)", ok: hasTag(html, "div") }];
-
     const missing = required.filter(r => !r.ok);
     const score = splitMarks(tasks[0].marks, missing.length, required.length);
 
@@ -238,14 +244,7 @@ if (!html) {
     });
   }
 
-  /* -----------------------------
-     Step 3: Wrap the Header (15)
-     Light but correct:
-       - wrapper signal: <header> OR (<div> ... <h1>)
-       - <h1> present
-       - <p> present
-     (No text checks)
-  -------------------------------- */
+  /* Step 3 */
   {
     const required = [
       { label: "Header is wrapped (has <header> OR a <div> that contains <h1>)", ok: headerWrappedLight(html) },
@@ -266,15 +265,7 @@ if (!html) {
     });
   }
 
-  /* -----------------------------
-     Step 4: Navigation Links (20)
-     Easy checks:
-       - at least one <a>
-       - at least one internal href="#..."
-       - at least one external href="http(s)://..."
-       - at least one target="_blank"
-     (Do NOT check exact #home/#create/#about)
-  -------------------------------- */
+  /* Step 4 */
   {
     const required = [
       { label: "At least one <a> link", ok: hasTag(html, "a") },
@@ -296,13 +287,7 @@ if (!html) {
     });
   }
 
-  /* -----------------------------
-     Step 5: Wrap Each Post (10)
-     Still easy but avoids false pass:
-       - require 2+ <div> (main container + at least one post container)
-       - <h4> exists
-       - <p> exists
-  -------------------------------- */
+  /* Step 5 */
   {
     const divCount = countTag(html, "div");
     const required = [
@@ -324,21 +309,7 @@ if (!html) {
     });
   }
 
-  /* -----------------------------
-     Step 6: Complete the Form (20)
-     Keep it light but aligned to requirements:
-       - form exists
-       - action="#" exists
-       - method="post" exists
-       - label exists
-       - input exists
-       - textarea exists
-       - name attribute exists on input/textarea
-       - placeholder exists on input/textarea
-       - required attribute exists anywhere (light)
-       - at least one label[for] matches an input/textarea id
-       - submit type="submit" exists
-  -------------------------------- */
+  /* Step 6 */
   {
     const required = [
       { label: "A <form> tag", ok: hasTag(html, "form") },
@@ -388,7 +359,7 @@ const submissionLine = `- **Deadline (Riyadh / UTC+03:00):** ${DEADLINE_RIYADH_I
 - **Submission marks:** **${submissionScore}/${SUBMISSION_MAX}** ${isLate ? "(Late submission)" : "(On time)"}
 `;
 
-let summary = `# demo_2.2_social_app – Autograding Summary
+let summary = `# Lab 1 – Autograding Summary
 
 ## Submission
 
@@ -483,11 +454,11 @@ feedback += `
 
 ## How marks were deducted (if any)
 
-- This autograder checks **top-level HTML structure** only (tags + a few basic attributes).
-- It does **not** check the exact text inside tags.
-- It does **not** check classes or ids.
-- Optional TODOs are **ignored**.
-- If a required item is missing in a step, marks are deducted **proportionally** within that step.
+- This autograder ignores HTML comments (examples inside comments do NOT count).
+- Checks only top-level tags and a few basic attributes (action/method/target/required).
+- It does not check classes, ids, or inner text.
+- Optional TODOs are ignored.
+- Missing required items reduce marks proportionally within a step.
 `;
 
 /* -----------------------------
