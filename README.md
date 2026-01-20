@@ -26,7 +26,7 @@ A single-page, HTML-only mini app featuring:
 > **Note:**  
 > Please follow the steps strictly to gain good marks in the assignment.  
 >  
-> **Due Date:** 19 Jan, 2026, **11:59 PM**
+> **Due Date:** 21 Jan, 2026, **11:59 PM**
 
 ### Step 1: Start from the Starter File
 1. Open `index.html` in your editor.
